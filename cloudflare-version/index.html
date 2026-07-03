@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Voyage Time</title>
+
+  <!-- Pixel/fantasy fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Your CSS file -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="live-background" aria-hidden="true"></div>
+  <div id="screenEffect" class="screen-effect" aria-hidden="true"></div>
+
+  <main class="app">
+    <section class="timer-panel">
+      <h1 class="title">Voyage Time</h1>
+
+      <div id="timerDisplay" class="timer-display">
+        25:00
+      </div>
+
+      <div class="time-settings">
+        <input
+          id="timeInput"
+          class="time-input"
+          type="number"
+          min="1"
+          max="180"
+          value="25"
+        />
+
+        <span class="time-unit">minutes</span>
+
+        <button id="setTimeButton" class="small-button">
+          Set Time
+        </button>
+      </div>
+
+      <div class="button-row">
+        <button id="startButton" class="main-button">
+          Start
+        </button>
+
+        <button id="pauseButton" class="main-button">
+          Pause
+        </button>
+
+        <button id="resetButton" class="main-button danger">
+          Reset
+        </button>
+      </div>
+
+      <p id="effectStatus" class="effect-status">
+        The sea is calm.
+      </p>
+    </section>
+
+    <section class="log-panel">
+      <h2 class="log-title">Captain's Log</h2>
+
+      <div id="eventLog" class="event-log">
+        <p>No voyage events yet...</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Your JavaScript file -->
+  <script src="script.js"></script>
+</body>
+</html>

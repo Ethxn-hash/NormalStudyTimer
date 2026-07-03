@@ -1,0 +1,528 @@
+/* ----------------------------
+   GLOBAL RESET
+---------------------------- */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Pixelify Sans", system-ui, sans-serif;
+  color: #f8fafc;
+
+  background-image:
+    linear-gradient(rgba(3, 7, 18, 0.20), rgba(3, 7, 18, 0.45)),
+    url("assets/sea_background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ----------------------------
+   LIVE BACKGROUND + EVENT EFFECTS
+---------------------------- */
+
+/* Keeps the main UI above the animated background */
+.app {
+  position: relative;
+  z-index: 2;
+}
+
+/* Always-running subtle magical ocean glow */
+.live-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+
+  background:
+    radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.22), transparent 28%),
+    radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.18), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.20), transparent 35%);
+
+  mix-blend-mode: screen;
+  opacity: 0.65;
+  animation: oceanGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes oceanGlow {
+  from {
+    transform: translateY(0px) scale(1);
+    opacity: 0.45;
+  }
+
+  to {
+    transform: translateY(-18px) scale(1.04);
+    opacity: 0.75;
+  }
+}
+
+/* Event animation layer */
+.screen-effect {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+}
+
+/* Good event glow */
+.screen-effect.effect-good {
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.35), transparent 60%);
+  animation: effectPulse 1.1s ease-out;
+}
+
+/* Bad event red flash */
+.screen-effect.effect-bad {
+  background: radial-gradient(circle, rgba(248, 113, 113, 0.35), transparent 60%);
+  animation: effectPulse 1.1s ease-out;
+}
+
+/* Time Whirlpool */
+.screen-effect.effect-whirlpool {
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(56, 189, 248, 0),
+      rgba(56, 189, 248, 0.35),
+      rgba(168, 85, 247, 0.35),
+      rgba(56, 189, 248, 0)
+    );
+  animation: whirlpoolSpin 1.2s ease-out;
+}
+
+/* Siren Song / Anchor Drop */
+.screen-effect.effect-freeze {
+  background: rgba(147, 197, 253, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: effectPulse 1.3s ease-out;
+}
+
+/* Heavy Fog / Cursed Seaweed */
+.screen-effect.effect-fog {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(226, 232, 240, 0.28),
+      transparent
+    );
+  animation: fogSweep 1.4s ease-out;
+}
+
+/* Magic Lighthouse */
+.screen-effect.effect-shield {
+  background:
+    radial-gradient(circle, rgba(250, 204, 21, 0.45), transparent 45%),
+    radial-gradient(circle, rgba(125, 211, 252, 0.25), transparent 65%);
+  animation: effectPulse 1.2s ease-out;
+}
+
+/* Ghost Ship */
+.screen-effect.effect-ghost {
+  background:
+    radial-gradient(circle, rgba(216, 180, 254, 0.35), transparent 55%);
+  filter: hue-rotate(60deg);
+  animation: ghostFade 1.5s ease-out;
+}
+
+@keyframes effectPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes whirlpoolSpin {
+  0% {
+    opacity: 0;
+    transform: rotate(0deg) scale(0.75);
+  }
+
+  35% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(240deg) scale(1.25);
+  }
+}
+
+@keyframes fogSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-60%);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(60%);
+  }
+}
+
+@keyframes ghostFade {
+  0% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+
+  40% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* ----------------------------
+   MAIN LAYOUT
+---------------------------- */
+
+.app {
+  width: min(1000px, 92vw);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 40px 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+}
+
+/* ----------------------------
+   GLASS PANELS
+---------------------------- */
+
+.timer-panel,
+.log-panel {
+  width: min(760px, 100%);
+
+  background: rgba(5, 13, 30, 0.68);
+  border: 2px solid rgba(125, 211, 252, 0.35);
+  border-radius: 28px;
+
+  box-shadow:
+    0 0 30px rgba(14, 165, 233, 0.25),
+    inset 0 0 24px rgba(255, 255, 255, 0.04);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.timer-panel {
+  padding: 34px 34px 28px;
+  text-align: center;
+}
+
+.log-panel {
+  padding: 22px;
+  flex: 1;
+  min-height: 330px;
+}
+
+/* ----------------------------
+   TITLE + TIMER
+---------------------------- */
+
+.title {
+  font-family: "Press Start 2P", system-ui, sans-serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.65rem);
+  color: #fef3c7;
+  text-shadow:
+    0 0 8px rgba(251, 191, 36, 0.8),
+    3px 3px 0 rgba(0, 0, 0, 0.45);
+
+  margin-bottom: 32px;
+}
+
+.timer-display {
+  font-family: "Pixelify Sans", system-ui, sans-serif;
+  font-size: clamp(5rem, 13vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
+
+  color: #dbeafe;
+  text-shadow:
+    0 0 10px rgba(96, 165, 250, 0.9),
+    0 0 28px rgba(14, 165, 233, 0.75),
+    5px 5px 0 rgba(0, 0, 0, 0.35);
+
+  margin-bottom: 28px;
+}
+
+/* ----------------------------
+   TIME SETTINGS
+---------------------------- */
+
+.time-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.time-input {
+  width: 90px;
+  padding: 10px 12px;
+
+  font-family: "Pixelify Sans", system-ui, sans-serif;
+  font-size: 1.3rem;
+  text-align: center;
+
+  color: #f8fafc;
+  background: rgba(2, 6, 23, 0.78);
+  border: 2px solid rgba(147, 197, 253, 0.55);
+  border-radius: 12px;
+
+  outline: none;
+}
+
+.time-input:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.35);
+}
+
+.time-unit {
+  font-size: 1.2rem;
+  color: #bfdbfe;
+}
+
+/* Remove number input arrows in most browsers */
+.time-input::-webkit-outer-spin-button,
+.time-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.time-input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* ----------------------------
+   BUTTONS
+---------------------------- */
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+}
+
+button {
+  font-family: "Pixelify Sans", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.main-button,
+.small-button {
+  color: #f8fafc;
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+
+  border: 2px solid rgba(191, 219, 254, 0.75);
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 0 rgba(15, 23, 42, 0.85),
+    0 0 16px rgba(59, 130, 246, 0.35);
+
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+.main-button {
+  min-width: 120px;
+  padding: 12px 18px;
+  font-size: 1.25rem;
+}
+
+.small-button {
+  padding: 10px 14px;
+  font-size: 1.05rem;
+}
+
+.main-button:hover,
+.small-button:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+.main-button:active,
+.small-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 3px 0 rgba(15, 23, 42, 0.9),
+    0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.danger {
+  background: linear-gradient(180deg, #dc2626, #991b1b);
+  border-color: rgba(254, 202, 202, 0.75);
+  box-shadow:
+    0 6px 0 rgba(69, 10, 10, 0.9),
+    0 0 16px rgba(239, 68, 68, 0.35);
+}
+
+/* ----------------------------
+   EFFECT STATUS
+---------------------------- */
+
+.effect-status {
+  min-height: 28px;
+
+  font-size: 1.15rem;
+  color: #bae6fd;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* ----------------------------
+   CAPTAIN'S LOG
+---------------------------- */
+
+.log-title {
+  font-family: "Press Start 2P", system-ui, sans-serif;
+  font-size: clamp(0.95rem, 2vw, 1.25rem);
+
+  color: #fef3c7;
+  text-align: center;
+
+  margin-bottom: 16px;
+  text-shadow:
+    0 0 8px rgba(251, 191, 36, 0.65),
+    3px 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+.event-log {
+  height: 300px;
+  max-height: 42vh;
+  overflow-y: auto;
+
+  padding: 16px 18px;
+
+  background: rgba(2, 6, 23, 0.72);
+  border: 2px solid rgba(147, 197, 253, 0.35);
+  border-radius: 18px;
+
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+.log-entry,
+.event-log p {
+  font-size: 1.15rem;
+  line-height: 1.3;
+  margin-bottom: 10px;
+
+  color: #e0f2fe;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.log-entry.good {
+  color: #bbf7d0;
+}
+
+.log-entry.bad {
+  color: #fecaca;
+}
+
+.log-entry.neutral {
+  color: #e0f2fe;
+}
+
+/* Scrollbar styling */
+.event-log::-webkit-scrollbar {
+  width: 10px;
+}
+
+.event-log::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.85);
+  border-radius: 999px;
+}
+
+.event-log::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.65);
+  border-radius: 999px;
+}
+
+.event-log::-webkit-scrollbar-thumb:hover {
+  background: rgba(186, 230, 253, 0.9);
+}
+
+/* ----------------------------
+   RESPONSIVE DESIGN
+---------------------------- */
+
+@media (max-width: 700px) {
+  .app {
+    width: 94vw;
+    padding: 24px 0;
+    gap: 20px;
+  }
+
+  .timer-panel {
+    padding: 26px 20px 24px;
+  }
+
+  .timer-display {
+    font-size: clamp(4.2rem, 22vw, 6.5rem);
+  }
+
+  .button-row {
+    gap: 10px;
+  }
+
+  .main-button {
+    min-width: 95px;
+    padding: 10px 12px;
+    font-size: 1.05rem;
+  }
+
+  .event-log {
+    height: 280px;
+    max-height: 45vh;
+  }
+
+  .log-entry,
+  .event-log p {
+    font-size: 1rem;
+  }
+}
